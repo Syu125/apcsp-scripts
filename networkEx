@@ -1,0 +1,29 @@
+
+#!/bin/bash
+for i in {236..300}
+do
+        ping -c 1 172.19.207.$i > /dev/null 2>&1
+        if [ $? -eq 0 ]
+        then
+                echo "172.19.207."$i ": Alive"
+        else
+                echo "172.19.207."$i ": Dead"
+        fi
+
+	  nc -zv 172.19.207.$i 22
+	if [$? -eq 0]
+	then
+		echo "Connected to SSH"
+	else
+		echo "Not Connected to SSH"
+	fi
+
+        nc -zv 172.19.207.$i 80
+	if [$? -eq 0]
+        then
+                echo "Connected to HTTP"
+        else
+                echo "Not Connected to HTTP"
+        fi
+
+done
