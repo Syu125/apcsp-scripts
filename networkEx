@@ -1,29 +1,31 @@
-
 #!/bin/bash
-for i in {236..300}
+for i in {200..236}
 do
-        ping -c 1 172.19.207.$i > /dev/null 2>&1
+        ping -c 1 172.19.209.$i > /dev/null 2>&1
         if [ $? -eq 0 ]
         then
+		echo ""
                 echo "172.19.207."$i ": Alive"
-        else
-                echo "172.19.207."$i ": Dead"
-        fi
+		hostname=$(host 172.19.207.$i | awk '{print $5}')
+		echo "IP Address: "$hostname" "
+		add=$(grep 172.19.207.$i /proc/net/arp | awk '{print $4}')
+		echo "HW address: "$add" "
 
-	  nc -zv 172.19.207.$i 22
-	if [$? -eq 0]
-	then
-		echo "Connected to SSH"
-	else
-		echo "Not Connected to SSH"
-	fi
-
-        nc -zv 172.19.207.$i 80
-	if [$? -eq 0]
+ nc -zv 172.19.207.$i 22 > /dev/null 2>&1
+        if [ $? -eq 0 ]
         then
-                echo "Connected to HTTP"
+                echo "SSH: connected"
         else
-                echo "Not Connected to HTTP"
+                echo "SSH: N/A"
         fi
 
+        nc -zv 172.19.207.$i 80 > /dev/null 2>&1
+        if [ $? -eq 0 ]
+        then
+                echo "HTTP: connected"
+        else
+                echo "HTTP: N/A"
+        fi
+
+fi
 done
